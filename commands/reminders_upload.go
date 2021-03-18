@@ -55,7 +55,6 @@ var headerRemindersKeys []string
 var keysRemindersLen int
 var tsRemindersExists = false
 
-
 func isReminderId(val string) bool {
 	if val == "reminderId" {
 		return true
@@ -75,7 +74,6 @@ func processRemindersHeader(keys []string) bool {
 	identityExists := false
 	reminderIdExists := false
 	reminderTsExists := false
-
 
 	for _, val := range keys {
 		if isIdentity(val) {
@@ -135,7 +133,13 @@ func processReminderCSVUploadLine(vals []string, line string) (interface{}, bool
 				log.Println("Reminder TS is missing.")
 				return nil, false
 			}
-			reminderData[key] = ep
+			v, err := strconv.ParseInt(ep, 10, 64)
+			if err == nil {
+				reminderData[key] = v
+			} else {
+				log.Println("Reminder TS is not in Int format.")
+				return nil, false
+			}
 			continue
 		}
 
